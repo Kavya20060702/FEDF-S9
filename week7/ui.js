@@ -1,0 +1,35 @@
+// ui.js
+import { calculateTotal, removeFromCart, cart } from './cart.js';
+
+export function updateCartUI(cartData) {
+  const cartItemsDiv = document.getElementById("cartItems");
+  const cartTotalDiv = document.getElementById("cartTotal");
+
+  cartItemsDiv.innerHTML = "";
+
+  cartData.forEach((book, index) => {
+    const itemDiv = document.createElement("div");
+    itemDiv.classList.add("cart-item");
+
+    itemDiv.innerHTML = `
+      <span>
+        <a href="${book.url}" target="_blank" style="color:#0056b3; text-decoration:underline;">
+          ${book.title}
+        </a> - ₹${book.price}
+      </span>
+      <button data-index="${index}" class="remove-btn">Remove</button>
+    `;
+
+    cartItemsDiv.appendChild(itemDiv);
+  });
+
+  cartItemsDiv.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const idx = e.target.getAttribute("data-index");
+      removeFromCart(idx);
+      updateCartUI(cart);
+    });
+  });
+
+  cartTotalDiv.textContent = `Total: ₹${calculateTotal()}`;
+}
